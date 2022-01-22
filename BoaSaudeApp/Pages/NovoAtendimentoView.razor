@@ -1,0 +1,73 @@
+﻿@page "/novo"
+
+
+
+<div class="container-fluid m-2" style="height: 100px;">
+    <h3>Novo atendimento</h3>
+
+    <div class="row align-items-start mb-1">
+        <div class="col">
+            <span for="exampleDataList" class="form-label">Associado</span>
+            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
+            <datalist id="datalistOptions">
+                <option value="San Francisco"></option>
+                <option value="New York"></option>
+                <option value="Seattle"></option>
+                <option value="Los Angeles"></option>
+                <option value="Chicago"></option>
+            </datalist>
+        </div>
+    </div>
+    <div class="row align-items-start mb-1">
+        <div class="col">
+            <span for="valor" class="control-label">Data</span>
+            <input type="date" class="form-control" id="valor" placeholder="Data">
+        </div>
+
+        <div class="col">
+            <span for="horario" class="control-label">Horário</span>
+            <input type="time" class="form-control" id="horario" placeholder="Horário">
+        </div>
+    </div>
+    <div class="row align-items-start mb-1">
+        <div class="col">
+            <span for="exampleDataList" class="form-label">Conveniado</span>
+            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
+            <datalist id="datalistOptions">
+                <option value="San Francisco"></option>
+                <option value="New York"></option>
+                <option value="Seattle"></option>
+                <option value="Los Angeles"></option>
+                <option value="Chicago"></option>
+            </datalist>
+        </div>
+    </div>
+    <div class="row align-items-start mb-4">
+        <div class="col">
+            <span for="procedimento" class="control-label">Procedimento</span>
+            <select id="procedimento" class="form-control" aria-label="Procedimento">
+                <option selected>Selecionar</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+
+        <div class="col">
+            <span for="horario" class="control-label">Valor</span>
+            <input type="number" class="form-control" id="horario" placeholder="Valor">
+        </div>
+    </div>
+
+    <div class="justify-content-end">
+        <input class="btn btn-primary" type="submit" value="Novo atendimento">
+    </div>
+</div>
+
+
+
+
+
+@code {
+
+}
