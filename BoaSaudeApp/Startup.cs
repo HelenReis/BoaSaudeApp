@@ -27,6 +27,7 @@ namespace BoaSaudeApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddTransient<IUsuarioRepositorio, UsuarioRepositorio>();
 
             services
                 .AddDbContext<DataContext>(

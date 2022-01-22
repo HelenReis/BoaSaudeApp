@@ -1,7 +1,18 @@
 ﻿@page "/"
+@inject Repositorio.IUsuarioRepositorio usuarioRepositorio;
 
-<h1>Hello, Helen!</h1>
+<h1>Hello, @nome</h1>
 
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    private string nome = "NO NAME";
+
+    protected async override Task OnInitializedAsync()
+    {
+        var usuario = await usuarioRepositorio.GetByIdAsync(1);
+        nome = usuario.Nome;
+    }
+}
