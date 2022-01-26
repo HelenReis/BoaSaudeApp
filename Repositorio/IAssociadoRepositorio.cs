@@ -1,4 +1,5 @@
 ﻿using Dominio;
+using Dominio.Usuario;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Repositorio
 {
-    public interface IUsuarioRepositorio
+    public interface IAssociadoRepositorio
     {
-        Task<Usuario> GetByIdAsync(int id);
+        Task<Associado> GetByIdAsync(int id);
     }
 }
