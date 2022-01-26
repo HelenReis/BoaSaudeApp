@@ -1,6 +1,6 @@
 ﻿using Dominio;
 using Dominio.AtendimentoModel;
-using Dominio.Usuario;
+using Dominio.UsuarioModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 

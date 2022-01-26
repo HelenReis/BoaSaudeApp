@@ -1,4 +1,4 @@
-﻿using Dominio.Usuario;
+﻿using Dominio.UsuarioModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dominio.Usuario
+namespace Dominio.UsuarioModel
 {
     public class Conveniado : UsuarioBase, IClasseBase
     {

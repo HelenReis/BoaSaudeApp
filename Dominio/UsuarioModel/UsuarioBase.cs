@@ -1,4 +1,4 @@
-﻿namespace Dominio
+﻿namespace Dominio.UsuarioModel
 {
     public class UsuarioBase
     {

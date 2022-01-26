@@ -1,5 +1,4 @@
-﻿using Dominio;
-using Dominio.Usuario;
+﻿using Dominio.UsuarioModel;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -20,5 +19,6 @@ namespace Repositorio
         {
             return await dbSet.FindAsync(id);
         }
+
     }
 }

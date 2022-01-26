@@ -1,8 +1,4 @@
-﻿using Dominio;
-using Dominio.Usuario;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Dominio.UsuarioModel;
 using System.Threading.Tasks;
 
 namespace Repositorio
