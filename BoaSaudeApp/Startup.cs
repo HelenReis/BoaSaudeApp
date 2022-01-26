@@ -63,6 +63,7 @@ namespace BoaSaudeApp
 
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
+                scope.ServiceProvider.GetService<DataContext>().Database.EnsureDeleted();
                 scope.ServiceProvider.GetService<DataContext>().Database.Migrate();
             }
         }
