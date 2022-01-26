@@ -1,9 +1,9 @@
-﻿@page "/"
-@inject Repositorio.IUsuarioRepositorio usuarioRepositorio;
+﻿@page "/index"
+@inject Repositorio.IAssociadoRepositorio associadoRepositorio;
 
 <h1>Hello, @nome</h1>
 
-Welcome to your new app.
+Welcome to your new app QAS.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
@@ -12,7 +12,7 @@ Welcome to your new app.
 
     protected async override Task OnInitializedAsync()
     {
-        var usuario = await usuarioRepositorio.GetByIdAsync(1);
-        nome = usuario.Nome;
+        var usuario = await associadoRepositorio.GetByIdAsync(1);
+        //nome = usuario.Nome;
     }
 }

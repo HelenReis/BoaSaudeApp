@@ -27,7 +27,7 @@ namespace BoaSaudeApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddTransient<IUsuarioRepositorio, UsuarioRepositorio>();
+            services.AddTransient<IAssociadoRepositorio, AssociadoRepositorio>();
 
             services
                 .AddDbContext<DataContext>(
@@ -63,6 +63,7 @@ namespace BoaSaudeApp
 
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
+                scope.ServiceProvider.GetService<DataContext>().Database.EnsureDeleted();
                 scope.ServiceProvider.GetService<DataContext>().Database.Migrate();
             }
         }

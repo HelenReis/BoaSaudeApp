@@ -1,0 +1,69 @@
+﻿@page "/"
+
+<div class="container-fluid m-2">
+    <div class="flex-column">
+        <h3>Atendimentos</h3>
+
+        <div class="form-inline">
+            <select class="form-control mr-2" aria-label="Localização">
+                <option selected>Localização</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+
+            <select class="form-control" aria-label="Status">
+                <option selected>Status</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+    </div>
+    <br />
+
+    <div class="table-responsive">
+        <table class="table caption-top">
+            <caption>Lista de atendimentos</caption>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Localização</th>
+                    <th scope="col" colspan="2">Status</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Marina</td>
+                    <td>Otto</td>
+                    <td class="table-danger" colspan="2">Cancelado</td>
+                    <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Tadeu</td>
+                    <td>Thornton</td>
+                    <td class="table-warning" colspan="2">Em apuração</td>
+                    <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Samara</td>
+                    <td>the Bird</td>
+                    <td class="table-success" colspan="2">Concluído</td>
+                    <td class="d-flex justify-content-end">
+                        <button class="btn btn-primary ml-auto" type="submit">Visualizar</button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+
+}
