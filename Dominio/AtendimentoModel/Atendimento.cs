@@ -1,4 +1,5 @@
-﻿using Dominio.UsuarioModel;
+﻿using Dominio.GeotecnologiaModel;
+using Dominio.UsuarioModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,26 +10,27 @@ namespace Dominio.AtendimentoModel
     {
         public Atendimento(
             decimal valor,
-            //StatusProcessoEnum statusProcesso,
+            StatusProcessoEnum statusProcesso,
             int prestadorId,
             int conveniadoId,
             DateTime dataHorarioAgendamento,
-            int associadoId)
+            int associadoId,
+            int cidadeId)
         {
             Valor = valor;
-            //StatusProcesso = statusProcesso;
+            StatusProcesso = statusProcesso;
             DataHorarioAgendamento = dataHorarioAgendamento;
             AssociadoId = associadoId;
             PrestadorId = prestadorId;
             ConveniadoId = conveniadoId;
-            /*CidadeId = cidadeId;*/
+            CidadeId = cidadeId;
         }
 
         public decimal Valor { get; private set; }
         public DateTime DataHorarioAgendamento { get; set; }
-        /*public StatusProcessoEnum StatusProcesso { get; private set; }
+        public StatusProcessoEnum StatusProcesso { get; private set; }
         public int CidadeId { get; set; }
-        public Cidade Cidade { get; set; }*/
+        public Cidade Cidade { get; set; }
         public int AssociadoId { get; private set; }
         public virtual Associado Associado { get; }
         public int ConveniadoId { get; private set; }

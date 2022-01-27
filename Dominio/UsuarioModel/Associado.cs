@@ -1,4 +1,5 @@
 ﻿using Dominio.AtendimentoModel;
+using Dominio.PlanoModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +34,7 @@ namespace Dominio.UsuarioModel
                 _valorPlanoAdicional = CalcularValorPlanoPorIdade();
             }
         }
-        /*public virtual Plano Plano { get; set; }*/
+        public virtual Plano Plano { get; set; }
         public virtual List<Atendimento> Atendimentos { get; set; }
         public int Id { get ; set; }
 

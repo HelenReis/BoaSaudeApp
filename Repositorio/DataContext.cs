@@ -1,5 +1,6 @@
 ﻿using Dominio;
 using Dominio.AtendimentoModel;
+using Dominio.PlanoModel;
 using Dominio.UsuarioModel;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,6 +40,18 @@ namespace Repositorio
 
             modelBuilder.Entity<ConveniadoPrestador>()
                 .HasKey(x => new { x.ConveniadoId, x.PrestadorId });
+
+            modelBuilder.Entity<Associado>()
+                .HasOne(a => a.Plano)
+                .WithMany(p => p.Associados);
+
+            modelBuilder.Entity<Plano>()
+                  .HasOne(a => a.TipoPlano)
+                  .WithMany(p => p.Planos);
+
+            modelBuilder.Entity<Plano>()
+                  .HasOne(a => a.CategoriaPlano)
+                  .WithMany(p => p.Planos);
         }
 
         public DbSet<Atendimento> Atendimento { get; set; }
