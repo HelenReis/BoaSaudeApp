@@ -1,10 +1,11 @@
 ﻿using Dominio.UsuarioModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Repositorio
 {
     public interface IAssociadoRepositorio
     {
-        Task<Associado> GetByIdAsync(int id);
+        Task<IEnumerable<Associado>> BuscarAssociadosAtivos();
     }
 }

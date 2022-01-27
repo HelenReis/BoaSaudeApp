@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Dominio
 {
-    public interface IClasseBase : IClasseBaseSemId
+    public interface IClasseBaseSemId
     {
-        int Id { get; set; }
     }
 }

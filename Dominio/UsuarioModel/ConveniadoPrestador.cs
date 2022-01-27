@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dominio.UsuarioModel
 {
-    public class ConveniadoPrestador
+    public class ConveniadoPrestador : IClasseBaseSemId
     {
         public int ConveniadoId { get; set; }
         public int PrestadorId { get; set; }

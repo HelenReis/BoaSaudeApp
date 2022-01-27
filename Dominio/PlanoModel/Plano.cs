@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dominio.PlanoModel
 {
-    public class Plano
+    public class Plano : IClasseBase
     {
         public Plano(
             int tipoPlanoId,
