@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositorio.Interface
+namespace Service.Interface
 {
-    public interface IAtendimentoRepositorio
+    public interface IAtendimentoService
     {
-        Task<Atendimento> AddAsync(Atendimento obj);
+        Task NovoAtendimento(Atendimento atendimento);
     }
 }
