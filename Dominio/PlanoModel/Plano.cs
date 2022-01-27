@@ -9,10 +9,16 @@ namespace Dominio.PlanoModel
     {
         public Plano(
             int tipoPlanoId,
-            int categoriaPlanoId)
+            int categoriaPlanoId,
+            string descricao,
+            decimal valorBase,
+            decimal porcentagemDesconto)
         {
             TipoPlanoId = tipoPlanoId;
             CategoriaPlanoId = categoriaPlanoId;
+            Descricao = descricao;
+            ValorBase = valorBase;
+            PorcentagemDesconto = porcentagemDesconto;
         }
 
         public int Id { get; set; }

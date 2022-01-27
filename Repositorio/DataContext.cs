@@ -59,5 +59,6 @@ namespace Repositorio
         public DbSet<Prestador> Prestador { get; set; }
         public DbSet<Prestador> Conveniado { get; set; }
         public DbSet<ConveniadoPrestador> ConveniadoPrestador { get; set; }
+        public DbSet<Plano> Plano { get; set; }
     }
 }
