@@ -47,7 +47,7 @@
                 @foreach (var atendimento in _atendimentosFiltrados)
                 {
                     <tr>
-                        <th scope="row">@atendimento.DataHorarioAgendamento.ToString("dd/MM/yyyy HH:mm")</th>
+                        <th scope="row">@atendimento.DataHorarioAgendamento.ToString("dd/MM/yyyy")</th>
                         <td>@atendimento.Associado.Nome</td>
                         <td>@atendimento.Cidade.Descricao</td>
                         <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
@@ -89,8 +89,7 @@
             _atendimentosFiltrados = _atendimentos;
             _statusSelecionado = null;
 
-            _atendimentosFiltrados = _atendimentos
-                .Where(e => _cidadeIdSelecionado != 0 ? e.CidadeId.Equals(_cidadeIdSelecionado) : true);
+            FiltrarCidadeSelecionada();
 
             return;
         }
@@ -99,7 +98,14 @@
         _statusSelecionado = (StatusProcessoEnum)statusId;
 
         _atendimentosFiltrados = _atendimentos
-            .Where(e => e.StatusProcesso == _statusSelecionado)
+            .Where(e => e.StatusProcesso == _statusSelecionado);
+
+        FiltrarCidadeSelecionada();
+    }
+
+    private void FiltrarCidadeSelecionada()
+    {
+        _atendimentosFiltrados = _atendimentosFiltrados
             .Where(e => _cidadeIdSelecionado != 0 ? e.CidadeId.Equals(_cidadeIdSelecionado) : true);
     }
 
@@ -110,16 +116,21 @@
             _atendimentosFiltrados = _atendimentos;
             _cidadeIdSelecionado = 0;
 
-            _atendimentosFiltrados = _atendimentos
-                .Where(e => _statusSelecionado != null ? e.StatusProcesso.Equals(_statusSelecionado) : true);
-
+            FiltrarLocalizacaoSelecionada();
             return;
         }
 
         _cidadeIdSelecionado = Convert.ToInt32(eventArgs.Value);
 
         _atendimentosFiltrados = _atendimentos
-            .Where(e => e.Cidade.Id == _cidadeIdSelecionado)
+            .Where(e => e.Cidade.Id == _cidadeIdSelecionado);
+
+        FiltrarLocalizacaoSelecionada();
+    }
+
+    private void FiltrarLocalizacaoSelecionada()
+    {
+        _atendimentosFiltrados = _atendimentosFiltrados
             .Where(e => _statusSelecionado != null ? e.StatusProcesso.Equals(_statusSelecionado) : true);
     }
 
