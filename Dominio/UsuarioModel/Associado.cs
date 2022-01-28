@@ -12,12 +12,16 @@ namespace Dominio.UsuarioModel
             string nome,
             DateTime dataNascimento,
             StatusAssociadoEnum status,
-            int planoId)
+            int planoId,
+            int quantidadeExamesAno, 
+            bool possuiOdontologico)
         {
             Nome = nome;
             DataNascimento = dataNascimento;
             Status = status;
             PlanoId = planoId;
+            QuantidadeExamesAno = quantidadeExamesAno;
+            PossuiOdontologico = possuiOdontologico;
         }
         private decimal _valorPlanoAdicional;
         public string Nome { get; set; }
