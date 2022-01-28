@@ -24,48 +24,6 @@
     </div>
     <br />
 
-    <!--<div class="table-responsive">
-        <table class="table caption-top">
-            <caption>Lista de atendimentos</caption>
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Localização</th>
-                    <th scope="col" colspan="2">Status</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Marina</td>
-                    <td>Otto</td>
-                    <td class="table-danger" colspan="2">Cancelado</td>
-                    <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Tadeu</td>
-                    <td>Thornton</td>
-                    <td class="table-warning" colspan="2">Em apuração</td>
-                    <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Samara</td>
-                    <td>the Bird</td>
-                    <td class="table-success" colspan="2">Concluído</td>
-                    <td class="d-flex justify-content-end">
-                        <button class="btn btn-primary ml-auto" type="submit">Visualizar</button>
-                    </td>
-
-                </tr>
-            </tbody>
-        </table>
-    </div>-->
-
-
     <div class="table-responsive">
         <table class="table caption-top">
             <caption>Lista de atendimentos</caption>
@@ -85,34 +43,10 @@
                         <th scope="row">1</th>
                         <td>@atendimento.Associado.Nome</td>
                         <td>@atendimento.Cidade.Descricao</td>
-                        <td class="table-danger" colspan="2">Cancelado</td>
+                        <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
                         <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
                     </tr>
                 }
-                <!--<tr>
-        <th scope="row">1</th>
-        <td>Marina</td>
-        <td>Otto</td>
-        <td class="table-danger" colspan="2">Cancelado</td>
-        <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
-    </tr>
-    <tr>
-        <th scope="row">2</th>
-        <td>Tadeu</td>
-        <td>Thornton</td>
-        <td class="table-warning" colspan="2">Em apuração</td>
-        <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
-    </tr>
-    <tr>
-        <th scope="row">3</th>
-        <td>Samara</td>
-        <td>the Bird</td>
-        <td class="table-success" colspan="2">Concluído</td>
-        <td class="d-flex justify-content-end">
-            <button class="btn btn-primary ml-auto" type="submit">Visualizar</button>
-        </td>
-
-    </tr>-->
             </tbody>
         </table>
     </div>
@@ -120,6 +54,21 @@
 
 @code {
     private IEnumerable<Atendimento> _atendimentos = new List<Atendimento>();
+
+    private string ClassPorStatus(string status)
+    {
+        switch (status)
+        {
+            case "Apuracao":
+                return "table-danger";
+            case "Conferencia":
+                return "table-warning";
+            case "Faturamento":
+                return "table-success";
+            default:
+                return "table-warning";
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
