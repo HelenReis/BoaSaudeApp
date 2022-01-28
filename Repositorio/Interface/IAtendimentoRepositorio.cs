@@ -9,5 +9,6 @@ namespace Repositorio.Interface
     public interface IAtendimentoRepositorio
     {
         Task<Atendimento> AddAsync(Atendimento obj);
+        Task<IEnumerable<Atendimento>> GetAllAsync(params string[] includeProperties);
     }
 }

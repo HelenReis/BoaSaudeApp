@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Repositorio;
+using Repositorio.Implementacao;
+using Repositorio.Interface;
+using Service.Implementacao;
+using Service.Interface;
 
 namespace BoaSaudeApp
 {
@@ -28,6 +32,15 @@ namespace BoaSaudeApp
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddTransient<IAssociadoRepositorio, AssociadoRepositorio>();
+            services.AddTransient<IConveniadoPrestadorRepositorio, ConveniadoPrestadorRepositorio>();
+            services.AddTransient<IAtendimentoRepositorio, AtendimentoRepositorio>();
+            services.AddTransient<IConveniadoRepositorio, ConveniadoRepositorio>();
+            services.AddTransient<IPlanoRepositorio, PlanoRepositorio>();
+            services.AddTransient<IPrestadorRepositorio, PrestadorRepositorio>();
+
+            services.AddTransient<IAssociadoService, AssociadoService>();
+            services.AddTransient<IAtendimentoService, AtendimentoService>();
+            services.AddTransient<IConveniadoPrestadorService, ConveniadoPrestadorService>();
 
             services
                 .AddDbContext<DataContext>(

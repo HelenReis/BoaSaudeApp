@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Repositorio.Implementacao
 {
-    public class PlanoRepositorio : RepositorioBase<Plano>, IConveniadoRepositorio
+    public class PlanoRepositorio : RepositorioBase<Plano>, IPlanoRepositorio
     {
         public PlanoRepositorio(DataContext dbContext) : base(dbContext)
         {

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Repositorio.Implementacao
 {
-    public class PrestadorRepositorio : RepositorioBase<Prestador>, IConveniadoRepositorio
+    public class PrestadorRepositorio : RepositorioBase<Prestador>, IPrestadorRepositorio
     {
         public PrestadorRepositorio(DataContext dbContext) : base(dbContext)
         {

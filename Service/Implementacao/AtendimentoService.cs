@@ -17,6 +17,16 @@ namespace Service.Implementacao
             _repositorio = repositorio;
         }
 
+        public async Task<IEnumerable<Atendimento>> ListarAtendimentos()
+        {
+            return await _repositorio.GetAllAsync(
+                "Associado",
+                "Associado.Plano",
+                "Conveniado",
+                "Prestador",
+                "Cidade");
+        }
+
         public async Task NovoAtendimento(Atendimento atendimento)
         {
             await _repositorio.AddAsync(atendimento);

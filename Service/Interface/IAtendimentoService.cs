@@ -9,5 +9,6 @@ namespace Service.Interface
     public interface IAtendimentoService
     {
         Task NovoAtendimento(Atendimento atendimento);
+        Task<IEnumerable<Atendimento>> ListarAtendimentos();
     }
 }
