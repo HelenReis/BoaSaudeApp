@@ -7,18 +7,20 @@
         <h3>Atendimentos</h3>
 
         <div class="form-inline">
-            <select class="form-control mr-2" aria-label="Localização">
-                <option selected>Localização</option>
+            <span for="select-status" class="control-label">Localização: </span>
+            <select class="form-control mr-2 ml-2" id="select-localizacao" aria-label="Localização">
+                <option selected>Todos</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
                 <option value="3">Three</option>
             </select>
 
-            <select class="form-control" aria-label="Status">
-                <option selected>Status</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+            <span for="select-status" class="control-label">Status: </span>
+            <select class="form-control ml-2" id="select-status" aria-label="Status" @onchange="((e) => FiltrarAtendimentoPorStatus(e))">
+                <option selected>Todos</option>
+                <option value=@(Convert.ToInt32(StatusProcessoEnum.Apuracao))>Apuração</option>
+                <option value=@(Convert.ToInt32(StatusProcessoEnum.Conferencia))>Conferência</option>
+                <option value=@(Convert.ToInt32(StatusProcessoEnum.Faturamento))>Faturamento</option>
             </select>
         </div>
     </div>
@@ -37,10 +39,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var atendimento in _atendimentos)
+
+                @foreach (var atendimento in _atendimentosFiltrados)
                 {
+                    currentCount++;
                     <tr>
-                        <th scope="row">1</th>
+                        <th scope="row">@currentCount</th>
                         <td>@atendimento.Associado.Nome</td>
                         <td>@atendimento.Cidade.Descricao</td>
                         <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
@@ -53,7 +57,9 @@
 </div>
 
 @code {
+    private int currentCount = 0;
     private IEnumerable<Atendimento> _atendimentos = new List<Atendimento>();
+    private IEnumerable<Atendimento> _atendimentosFiltrados = new List<Atendimento>();
 
     private string ClassPorStatus(string status)
     {
@@ -70,8 +76,23 @@
         }
     }
 
+    private void FiltrarAtendimentoPorStatus(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value.Equals("Todos"))
+        {
+            _atendimentosFiltrados = _atendimentos;
+            return;
+        }
+
+        var status = (StatusProcessoEnum)Convert.ToInt32(eventArgs.Value);
+
+        _atendimentosFiltrados = _atendimentos
+            .Where(e => e.StatusProcesso == status);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         _atendimentos = await atendimentoService.ListarAtendimentos();
+        _atendimentosFiltrados = _atendimentos;
     }
 }
