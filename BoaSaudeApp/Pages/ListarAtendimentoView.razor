@@ -1,6 +1,8 @@
 ﻿@page "/"
 @inject Service.Interface.IAtendimentoService atendimentoService;
+@inject Service.Interface.ICidadeService cidadeService;
 @using Dominio.AtendimentoModel;
+@using Dominio.GeotecnologiaModel;
 
 <div class="container-fluid m-2">
     <div class="flex-column">
@@ -8,11 +10,13 @@
 
         <div class="form-inline">
             <span for="select-status" class="control-label">Localização: </span>
-            <select class="form-control mr-2 ml-2" id="select-localizacao" aria-label="Localização">
+            <select class="form-control mr-2 ml-2" id="select-localizacao" aria-label="Localização"
+                    disabled="@(_cidades.Count() == 0)" @onchange="((e) => FiltrarAtendimentosPorLocalizacao(e))">
                 <option selected>Todos</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                @foreach (var cidade in _cidades)
+                {
+                    <option value=@cidade.Id>@cidade.Descricao</option>
+                }
             </select>
 
             <span for="select-status" class="control-label">Status: </span>
@@ -31,7 +35,7 @@
             <caption>Lista de atendimentos</caption>
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Data</th>
                     <th scope="col">Nome</th>
                     <th scope="col">Localização</th>
                     <th scope="col" colspan="2">Status</th>
@@ -42,9 +46,8 @@
 
                 @foreach (var atendimento in _atendimentosFiltrados)
                 {
-                    currentCount++;
                     <tr>
-                        <th scope="row">@currentCount</th>
+                        <th scope="row">@atendimento.DataHorarioAgendamento.ToString("dd/MM/yyyy HH:mm")</th>
                         <td>@atendimento.Associado.Nome</td>
                         <td>@atendimento.Cidade.Descricao</td>
                         <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
@@ -57,9 +60,12 @@
 </div>
 
 @code {
-    private int currentCount = 0;
+    private int _cidadeIdSelecionado = 0;
+    private StatusProcessoEnum? _statusSelecionado = null;
+
     private IEnumerable<Atendimento> _atendimentos = new List<Atendimento>();
     private IEnumerable<Atendimento> _atendimentosFiltrados = new List<Atendimento>();
+    private IEnumerable<Cidade> _cidades = new List<Cidade>();
 
     private string ClassPorStatus(string status)
     {
@@ -81,18 +87,46 @@
         if (eventArgs.Value.Equals("Todos"))
         {
             _atendimentosFiltrados = _atendimentos;
+            _statusSelecionado = null;
+
+            _atendimentosFiltrados = _atendimentos
+                .Where(e => _cidadeIdSelecionado != 0 ? e.CidadeId.Equals(_cidadeIdSelecionado) : true);
+
             return;
         }
 
-        var status = (StatusProcessoEnum)Convert.ToInt32(eventArgs.Value);
+        var statusId = Convert.ToInt32(eventArgs.Value);
+        _statusSelecionado = (StatusProcessoEnum)statusId;
 
         _atendimentosFiltrados = _atendimentos
-            .Where(e => e.StatusProcesso == status);
+            .Where(e => e.StatusProcesso == _statusSelecionado)
+            .Where(e => _cidadeIdSelecionado != 0 ? e.CidadeId.Equals(_cidadeIdSelecionado) : true);
+    }
+
+    private void FiltrarAtendimentosPorLocalizacao(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value.Equals("Todos"))
+        {
+            _atendimentosFiltrados = _atendimentos;
+            _cidadeIdSelecionado = 0;
+
+            _atendimentosFiltrados = _atendimentos
+                .Where(e => _statusSelecionado != null ? e.StatusProcesso.Equals(_statusSelecionado) : true);
+
+            return;
+        }
+
+        _cidadeIdSelecionado = Convert.ToInt32(eventArgs.Value);
+
+        _atendimentosFiltrados = _atendimentos
+            .Where(e => e.Cidade.Id == _cidadeIdSelecionado)
+            .Where(e => _statusSelecionado != null ? e.StatusProcesso.Equals(_statusSelecionado) : true);
     }
 
     protected override async Task OnInitializedAsync()
     {
         _atendimentos = await atendimentoService.ListarAtendimentos();
+        _cidades = await cidadeService.ListarCidades();
         _atendimentosFiltrados = _atendimentos;
     }
 }

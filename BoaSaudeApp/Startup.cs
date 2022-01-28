@@ -37,10 +37,12 @@ namespace BoaSaudeApp
             services.AddTransient<IConveniadoRepositorio, ConveniadoRepositorio>();
             services.AddTransient<IPlanoRepositorio, PlanoRepositorio>();
             services.AddTransient<IPrestadorRepositorio, PrestadorRepositorio>();
+            services.AddTransient<ICidadeRepositorio, CidadeRepositorio>();
 
             services.AddTransient<IAssociadoService, AssociadoService>();
             services.AddTransient<IAtendimentoService, AtendimentoService>();
             services.AddTransient<IConveniadoPrestadorService, ConveniadoPrestadorService>();
+            services.AddTransient<ICidadeService, CidadeService>();
 
             services
                 .AddDbContext<DataContext>(

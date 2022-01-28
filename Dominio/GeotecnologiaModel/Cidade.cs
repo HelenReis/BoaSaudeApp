@@ -1,6 +1,6 @@
 ﻿namespace Dominio.GeotecnologiaModel
 {
-    public class Cidade
+    public class Cidade : IClasseBase
     {
         public Cidade(string descricao, string codigoEstado)
         {
