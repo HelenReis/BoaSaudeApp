@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using BoaSaudeApp.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -43,6 +44,7 @@ namespace BoaSaudeApp
             services.AddTransient<IAtendimentoService, AtendimentoService>();
             services.AddTransient<IConveniadoPrestadorService, ConveniadoPrestadorService>();
             services.AddTransient<ICidadeService, CidadeService>();
+            services.AddBlazoredModal();
 
             services
                 .AddDbContext<DataContext>(

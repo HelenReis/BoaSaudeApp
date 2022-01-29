@@ -1,8 +1,11 @@
 ﻿@page "/"
 @inject Service.Interface.IAtendimentoService atendimentoService;
 @inject Service.Interface.ICidadeService cidadeService;
+@inject IModalService modal;
 @using Dominio.AtendimentoModel;
 @using Dominio.GeotecnologiaModel;
+@using Blazored.Modal;
+@using Blazored.Modal.Services
 
 <div class="container-fluid m-2">
     <div class="flex-column">
@@ -51,7 +54,7 @@
                         <td>@atendimento.Associado.Nome</td>
                         <td>@atendimento.Cidade.Descricao</td>
                         <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
-                        <td class="d-flex justify-content-end"><button class="btn btn-primary" type="submit">Visualizar</button></td>
+                        <td class="d-flex justify-content-end"><button class="btn btn-primary" @onclick="@(() => AbrirModalDetalhes(atendimento))">Visualizar</button></td>
                     </tr>
                 }
             </tbody>
@@ -132,6 +135,14 @@
     {
         _atendimentosFiltrados = _atendimentosFiltrados
             .Where(e => _statusSelecionado != null ? e.StatusProcesso.Equals(_statusSelecionado) : true);
+    }
+
+    private void AbrirModalDetalhes(Atendimento atendimento)
+    {
+        var parametros = new ModalParameters();
+        parametros.Add("Atendimento", atendimento);
+
+        modal.Show<DetalheAtendimentoView>("Dados atendimento", parametros);
     }
 
     protected override async Task OnInitializedAsync()

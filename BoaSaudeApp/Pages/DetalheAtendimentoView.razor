@@ -1,0 +1,55 @@
+﻿@using Dominio.AtendimentoModel;
+
+<address>
+    <strong>Dados cliente</strong><br>
+    Associado: @atendimento.Associado.Nome<br>
+    Idade: @atendimento.Associado.CalcularIdade() anos<br>
+</address>
+
+<address>
+    <strong>Plano contratado</strong><br>
+    @atendimento.Associado.Plano.Descricao<br>
+    @_valorTotalPlanoPago.ToString("C")<br>
+</address>
+
+<address>
+    <strong>Preço atendimento</strong><br>
+    Particular: @atendimento.Valor.ToString("C")<br>
+    Convênio: @_valorAtendimentoPlano.ToString("C")<br>
+</address>
+
+<address>
+    <strong>Prestador</strong><br>
+    @atendimento.Prestador.Nome<br>
+    CRM: @atendimento.Prestador.CRM<br>
+</address>
+
+<address>
+    <strong>Conveniado</strong><br>
+    @atendimento.Conveniado.NomeFantasia<br>
+</address>
+
+@code {
+    [Parameter] public Atendimento atendimento { get; set; }
+
+    private decimal _valorTotalPlanoPago = 0;
+    private decimal _valorAtendimentoPlano = 0;
+
+    private decimal CalcularValorPagoPlanoAssociado()
+    {
+        var valorTotalPlanoPago =
+            atendimento.Associado.Plano.ValorBase +
+            atendimento.Associado.ValorPlanoAdicional;
+
+        return valorTotalPlanoPago;
+    }
+
+    private decimal CalcularValorAtendimentoPeloPlano()
+        => atendimento.Valor - (atendimento.Valor * (atendimento.Associado.Plano.PorcentagemDesconto / 100));
+
+    protected override void OnInitialized()
+    {
+        _valorTotalPlanoPago = CalcularValorPagoPlanoAssociado();
+        _valorAtendimentoPlano = CalcularValorAtendimentoPeloPlano();
+    }
+}
