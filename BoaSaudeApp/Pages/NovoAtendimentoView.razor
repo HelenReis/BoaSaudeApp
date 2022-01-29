@@ -1,81 +1,212 @@
 ﻿@page "/novo"
 @using Dominio.UsuarioModel;
+@using Dominio.AtendimentoModel;
+@using BoaSaudeApp.Pages.ViewModel;
+@using Blazored.Modal;
+@using Blazored.Modal.Services
 @inject Service.Interface.IAssociadoService associadoService;
+@inject Service.Interface.IConveniadoPrestadorService conveniadoPrestadorService;
+@inject Service.Interface.IAtendimentoService atendimentoService;
+@inject IModalService modal;
 
 
 
+<EditForm Model="@atendimentoNovo" OnValidSubmit="@(async e => await NovoAtendimento())">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="container-fluid m-2" style="height: 100px;">
+        <h3>Novo atendimento</h3>
 
-<div class="container-fluid m-2" style="height: 100px;">
-    <h3>Novo atendimento</h3>
+        <div class="row mb-1">
+            <div class="col-8">
+                <span for="exampleDataList" class="form-label">Associado</span>
+                <input @bind="@atendimentoNovo.AssociadoIdSelecionado" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
+                <datalist id="datalistOptions">
+                    @foreach (var associado in _associados)
+                    {
+                        <option value="@associado.Nome">@associado.Nome</option>
+                    }
+                </datalist>
+                <ValidationMessage For="(()=> atendimentoNovo.AssociadoIdSelecionado)" />
+            </div>
+        </div>
+        <div class="row align-items-start mb-1">
+            <div class="col-4">
+                <span for="valor" class="control-label">Data</span>
+                <input @bind="@atendimentoNovo.Data" type="date" class="form-control" id="valor" placeholder="Data">
+            </div>
 
-    <div class="row mb-1">
-        <div class="col-8">
-            <span for="exampleDataList" class="form-label">Associado</span>
-            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
-            <datalist id="datalistOptions">
-                @foreach (var associado in _associados)
-                {
-                    <option value="@associado.Nome">@associado.Nome</option>
-                }
-            </datalist>
+            <div class="col-4">
+                <span for="horario" class="control-label">Horário</span>
+                <input @bind="@atendimentoNovo.Horario" type="time" class="form-control" id="horario" placeholder="Horário">
+            </div>
+        </div>
+        <div class="row align-items-start mb-1">
+            <div class="col-8">
+                <span for="exampleDataList" class="form-label">Conveniado</span>
+                <input @bind="@atendimentoNovo.ConveniadoIdSelecionado" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
+                <datalist id="datalistOptions">
+                    @foreach (var conveniado in _conveniados)
+                    {
+                        <option value="@conveniado.Conveniado.NomeFantasia">@conveniado.Conveniado.NomeFantasia</option>
+                    }
+                </datalist>
+            </div>
+        </div>
+        <div class="row align-items-start mb-4">
+            <div class="col-4">
+                <span for="procedimento" class="control-label">Procedimento</span>
+                <select id="procedimento" class="form-control" aria-label="Procedimento" @bind="@ProcedimentoIdSelecionado">
+                    <option selected>Selecionar</option>
+                    @foreach (var procedimento in _procedimentos)
+                    {
+                        <option value=@ObterProcedimentoId(procedimento.Key)>@ObterDescricaoProcedimento(procedimento.Key)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-4">
+                <span for="horario" class="control-label">Valor</span>
+                <input type="number" @bind="atendimentoNovo.Valor" class="form-control" id="horario" placeholder="Valor">
+            </div>
+        </div>
+
+        <div class="justify-content-end">
+            <input class="btn btn-primary" disabled="@BtnDisabled" type="submit" value="Novo atendimento">
         </div>
     </div>
-    <div class="row align-items-start mb-1">
-        <div class="col-4">
-            <span for="valor" class="control-label">Data</span>
-            <input type="date" class="form-control" id="valor" placeholder="Data">
-        </div>
-
-        <div class="col-4">
-            <span for="horario" class="control-label">Horário</span>
-            <input type="time" class="form-control" id="horario" placeholder="Horário">
-        </div>
-    </div>
-    <div class="row align-items-start mb-1">
-        <div class="col-8">
-            <span for="exampleDataList" class="form-label">Conveniado</span>
-            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
-            <datalist id="datalistOptions">
-                <option value="San Francisco"></option>
-                <option value="New York"></option>
-                <option value="Seattle"></option>
-                <option value="Los Angeles"></option>
-                <option value="Chicago"></option>
-            </datalist>
-        </div>
-    </div>
-    <div class="row align-items-start mb-4">
-        <div class="col-4">
-            <span for="procedimento" class="control-label">Procedimento</span>
-            <select id="procedimento" class="form-control" aria-label="Procedimento">
-                <option selected>Selecionar</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-        </div>
-
-        <div class="col-4">
-            <span for="horario" class="control-label">Valor</span>
-            <input type="number" class="form-control" id="horario" placeholder="Valor">
-        </div>
-    </div>
-
-    <div class="justify-content-end">
-        <input class="btn btn-primary" type="submit" value="Novo atendimento">
-    </div>
-</div>
-
-
-
-
+</EditForm>
 
 @code {
+    private bool BtnDisabled { get; set; } = false;
+    private AtendimentoView atendimentoNovo = new AtendimentoView { Data = DateTime.Now.Date, Horario = DateTime.Now };
+    private Dictionary<ProcedimentoEnum, decimal> _procedimentos =
+    new Dictionary<ProcedimentoEnum, decimal>() {
+            {
+                ProcedimentoEnum.Consulta, 50
+            },
+            {
+                ProcedimentoEnum.Retorno, 100
+            }};
+
     private IEnumerable<Associado> _associados = new List<Associado>();
+    private IEnumerable<ConveniadoPrestador> _conveniados = new List<ConveniadoPrestador>();
+
+
+    private async Task NovoAtendimento()
+    {
+        BtnDisabled = true;
+
+        var dataHorarioAgendamento = atendimentoNovo.Data
+        .AddHours(atendimentoNovo.Horario.Hour)
+        .AddMinutes(atendimentoNovo.Horario.Minute);
+
+        var atendimento = new Atendimento(
+            atendimentoNovo.Valor,
+            StatusProcessoEnum.Apuracao,
+            dataHorarioAgendamento,
+            1,
+            1,
+            AssociadoIdSelecionado,
+            1);
+
+        await atendimentoService.NovoAtendimento(atendimento);
+
+        ModalConfirmacao();
+        ResetarForm();
+
+        BtnDisabled = false;
+    }
+
+    private void ResetarForm()
+    {
+        atendimentoNovo = new AtendimentoView()
+        {
+            Data = DateTime.Now.Date,
+            Horario = DateTime.Now
+        };
+    }
+
+    private void ModalConfirmacao()
+    {
+        modal.Show<ModalAvisoView>("Sucesso!");
+    }
+
+    private int AssociadoIdSelecionado
+    {
+        get
+        {
+            return _associados.FirstOrDefault(c =>
+              c.Nome.Equals(atendimentoNovo.AssociadoIdSelecionado))
+              .Id; ;
+        }
+    }
+
+    private string ProcedimentoIdSelecionado
+    {
+        get
+        {
+            return atendimentoNovo.ProcedimentoId;
+        }
+        set
+        {
+            MudouProcedimento(value);
+        }
+    }
+
+    private void MudouProcedimento(string procedimentoId)
+    {
+        atendimentoNovo.ProcedimentoId = procedimentoId;
+
+        var procedimentoIdConvertido = Convert.ToInt32(procedimentoId);
+
+        switch (procedimentoIdConvertido)
+        {
+            case 1:
+                atendimentoNovo.Valor = 50;
+                break;
+            case 2:
+                atendimentoNovo.Valor = 100;
+                break;
+            case 3:
+                atendimentoNovo.Valor = 150;
+                break;
+            default:
+                atendimentoNovo.Valor = 0;
+                break;
+        }
+    }
+
+    private int ObterProcedimentoId(ProcedimentoEnum procedimento)
+    {
+        switch (procedimento)
+        {
+            case ProcedimentoEnum.Consulta:
+                return 1;
+            case ProcedimentoEnum.Retorno:
+                return 2;
+            default:
+                return 1;
+        }
+    }
+
+    private string ObterDescricaoProcedimento(ProcedimentoEnum procedimento)
+    {
+        switch (procedimento)
+        {
+            case ProcedimentoEnum.Consulta:
+                return "Consulta";
+            case ProcedimentoEnum.Retorno:
+                return "Retorno";
+            default:
+                return "Não selecionado";
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         _associados = await associadoService.BuscarAssociadosAtivos();
-
+        _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
+        Console.WriteLine(_conveniados);
     }
 }
