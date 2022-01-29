@@ -1,4 +1,7 @@
 ﻿@page "/novo"
+@using Dominio.UsuarioModel;
+@inject Service.Interface.IAssociadoService associadoService;
+
 
 
 
@@ -10,11 +13,10 @@
             <span for="exampleDataList" class="form-label">Associado</span>
             <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
             <datalist id="datalistOptions">
-                <option value="San Francisco"></option>
-                <option value="New York"></option>
-                <option value="Seattle"></option>
-                <option value="Los Angeles"></option>
-                <option value="Chicago"></option>
+                @foreach (var associado in _associados)
+                {
+                    <option value="@associado.Nome">@associado.Nome</option>
+                }
             </datalist>
         </div>
     </div>
@@ -69,5 +71,11 @@
 
 
 @code {
+    private IEnumerable<Associado> _associados = new List<Associado>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        _associados = await associadoService.BuscarAssociadosAtivos();
+
+    }
 }
