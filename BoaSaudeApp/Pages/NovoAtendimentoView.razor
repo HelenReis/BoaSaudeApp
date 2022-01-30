@@ -1,13 +1,23 @@
 ﻿@page "/novo"
 @using Dominio.UsuarioModel;
 @using Dominio.AtendimentoModel;
+@using Dominio.GeotecnologiaModel;
+@using Dominio;
 @using BoaSaudeApp.Pages.ViewModel;
 @using Blazored.Modal;
 @using Blazored.Modal.Services
+@using Newtonsoft.Json;
+@using System;
+@using Microsoft.Extensions.Configuration;
+@using Flurl;
+@using Flurl.Http;
 @inject Service.Interface.IAssociadoService associadoService;
 @inject Service.Interface.IConveniadoPrestadorService conveniadoPrestadorService;
 @inject Service.Interface.IAtendimentoService atendimentoService;
+@inject Service.Interface.ICidadeService cidadeService;
 @inject IModalService modal;
+@inject IJSRuntime JSRuntime;
+@inject IConfiguration configuration;
 
 
 
@@ -92,6 +102,8 @@
     private IEnumerable<Associado> _associados = new List<Associado>();
     private IEnumerable<ConveniadoPrestador> _conveniados = new List<ConveniadoPrestador>();
 
+    private Coordenadas _coordenadas { get; set; }
+
 
     private async Task NovoAtendimento()
     {
@@ -101,14 +113,17 @@
         .AddHours(atendimentoNovo.Horario.Hour)
         .AddMinutes(atendimentoNovo.Horario.Minute);
 
+        var endereco = await BuscarEnderecoPorCoordenadas();
+        var cidadeId = await BuscarCidadeId(endereco);
+
         var atendimento = new Atendimento(
-            atendimentoNovo.Valor,
-            StatusProcessoEnum.Apuracao,
-            dataHorarioAgendamento,
-            1,
-            ConveniadoIdSelecionado,
-            AssociadoIdSelecionado,
-            1);
+        atendimentoNovo.Valor,
+        StatusProcessoEnum.Apuracao,
+        dataHorarioAgendamento,
+        1,
+        ConveniadoIdSelecionado,
+        AssociadoIdSelecionado,
+        cidadeId);
 
         await atendimentoService.NovoAtendimento(atendimento);
 
@@ -116,6 +131,56 @@
         ResetarForm();
 
         BtnDisabled = false;
+    }
+
+    private async Task<EnderecoDetalhes> BuscarEnderecoPorCoordenadas()
+    {
+        try
+        {
+            var coordenadas = _coordenadas.ParaString();
+
+            var url = configuration.GetConnectionString("PositionStackUrl");
+            var accessKey = configuration.GetConnectionString("PositionStackAccessKey");
+
+            var endereco = await url
+                .AppendPathSegment("reverse")
+                .SetQueryParams(
+                    new
+                    {
+                        access_key = accessKey,
+                        query = coordenadas
+                    })
+                .GetAsync()
+                .ReceiveJson<Endereco>();
+
+            return endereco.Data.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw ex;
+        }
+    }
+
+    private async Task<int> BuscarCidadeId(EnderecoDetalhes endereco)
+    {
+        var cidade = await BuscarCidade(endereco.Cidade);
+
+        if (cidade == null)
+            cidade = await CadastrarCidade(
+                new Cidade(endereco.Cidade, endereco.CodigoEstado));
+
+        return cidade.Id;
+    }
+
+    private async Task<Cidade> BuscarCidade(string descricao)
+    {
+        return await cidadeService.BuscarCidadePorDescricao(descricao);
+    }
+
+    private async Task<Cidade> CadastrarCidade(Cidade cidade)
+    {
+        return await cidadeService.CadastrarCidade(cidade);
     }
 
     private void ResetarForm()
@@ -213,10 +278,16 @@
         }
     }
 
+    private async Task<Coordenadas> BuscarCoordenadas()
+    {
+        var coordenadas = await JSRuntime.InvokeAsync<string>("getCoordenadas");
+        return JsonConvert.DeserializeObject<Coordenadas>(coordenadas);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
-        Console.WriteLine(_conveniados);
+        _coordenadas = await BuscarCoordenadas();
     }
 }

@@ -8,6 +8,8 @@ namespace Service.Interface
 {
     public interface ICidadeService
     {
+        Task<Cidade> BuscarCidadePorDescricao(string descricao);
+        Task<Cidade> CadastrarCidade(Cidade cidade);
         Task<IEnumerable<Cidade>> ListarCidades();
     }
 }

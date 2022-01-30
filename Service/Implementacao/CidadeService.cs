@@ -17,6 +17,16 @@ namespace Service.Implementacao
             _repositorio = repositorio;
         }
 
+        public async Task<Cidade> BuscarCidadePorDescricao(string descricao)
+        {
+            return await _repositorio.BuscarCidadeIdPorDescricao(descricao);
+        }
+
+        public async Task<Cidade> CadastrarCidade(Cidade cidade)
+        {
+            return await _repositorio.AddAsync(cidade);
+        }
+
         public async Task<IEnumerable<Cidade>> ListarCidades()
         {
             return await _repositorio.GetAllAsync();

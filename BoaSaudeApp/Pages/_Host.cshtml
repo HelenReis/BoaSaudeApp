@@ -31,6 +31,25 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <script src="../Pages/blazor-modal.js"></script>
     <script src="_framework/blazor.server.js"></script>
+    <script src="_content/Blazored.Modal/blazored.modal.js"></script>
+
+    <script>
+        window.getCoordenadas = async function () {
+            var position = await new Promise((resolve, reject) =>
+                navigator.geolocation.getCurrentPosition(resolve, reject)
+            );
+
+            var myPosition =
+            {
+                longitude: position.coords.longitude,
+                latitude: position.coords.latitude
+            }
+
+            var objetoString = JSON.stringify(myPosition);
+            return objetoString;
+        };
+    </script>
 </body>
 </html>
