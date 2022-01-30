@@ -43,9 +43,9 @@
         </div>
         <div class="row align-items-start mb-1">
             <div class="col-8">
-                <span for="exampleDataList" class="form-label">Conveniado</span>
-                <input @bind="@atendimentoNovo.ConveniadoIdSelecionado" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Digite para pesquisar...">
-                <datalist id="datalistOptions">
+                <span for="conveniadoList" class="form-label">Conveniado</span>
+                <input @bind="@atendimentoNovo.ConveniadoIdSelecionado" class="form-control" list="datalistOptions2" id="conveniadoList" placeholder="Digite para pesquisar...">
+                <datalist id="datalistOptions2">
                     @foreach (var conveniado in _conveniados)
                     {
                         <option value="@conveniado.Conveniado.NomeFantasia">@conveniado.Conveniado.NomeFantasia</option>
@@ -106,7 +106,7 @@
             StatusProcessoEnum.Apuracao,
             dataHorarioAgendamento,
             1,
-            1,
+            ConveniadoIdSelecionado,
             AssociadoIdSelecionado,
             1);
 
@@ -139,6 +139,16 @@
             return _associados.FirstOrDefault(c =>
               c.Nome.Equals(atendimentoNovo.AssociadoIdSelecionado))
               .Id; ;
+        }
+    }
+
+    private int ConveniadoIdSelecionado
+    {
+        get
+        {
+            return _conveniados.FirstOrDefault(c =>
+              c.Conveniado.NomeFantasia.Equals(atendimentoNovo.ConveniadoIdSelecionado))
+              .ConveniadoId; ;
         }
     }
 
