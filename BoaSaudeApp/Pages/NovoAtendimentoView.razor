@@ -123,7 +123,7 @@
         1,
         ConveniadoIdSelecionado,
         AssociadoIdSelecionado,
-        cidadeId);
+        1);
 
         await atendimentoService.NovoAtendimento(atendimento);
 
@@ -288,6 +288,6 @@
     {
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
-        _coordenadas = await BuscarCoordenadas();
+        //_coordenadas = await BuscarCoordenadas();
     }
 }

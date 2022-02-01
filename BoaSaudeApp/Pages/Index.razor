@@ -7,6 +7,15 @@ Welcome to your new app QAS.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
+<AuthorizeView>
+    <Authorized>
+        <p>Welcome, @context.User.Identity.Name</p>
+    </Authorized>
+    <NotAuthorized>
+        You are signed out!
+    </NotAuthorized>
+</AuthorizeView>
+
 @code {
     private string nome = "NO TESTES";
 

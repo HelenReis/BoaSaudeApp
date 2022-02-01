@@ -7,60 +7,67 @@
 @using Blazored.Modal;
 @using Blazored.Modal.Services
 
-<div class="container-fluid m-2">
-    <div class="flex-column">
-        <h3>Atendimentos</h3>
+<AuthorizeView>
+    <Authorized>
+        <div class="container-fluid m-2">
+            <div class="flex-column">
+                <h3>Atendimentos</h3>
 
-        <div class="form-inline">
-            <span for="select-status" class="control-label">Localização: </span>
-            <select class="form-control mr-2 ml-2" id="select-localizacao" aria-label="Localização"
-                    disabled="@(_cidades.Count() == 0)" @onchange="((e) => FiltrarAtendimentosPorLocalizacao(e))">
-                <option selected>Todos</option>
-                @foreach (var cidade in _cidades)
-                {
-                    <option value=@cidade.Id>@cidade.Descricao</option>
-                }
-            </select>
+                <div class="form-inline">
+                    <span for="select-status" class="control-label">Localização: </span>
+                    <select class="form-control mr-2 ml-2" id="select-localizacao" aria-label="Localização"
+                            disabled="@(_cidades.Count() == 0)" @onchange="((e) => FiltrarAtendimentosPorLocalizacao(e))">
+                        <option selected>Todos</option>
+                        @foreach (var cidade in _cidades)
+                        {
+                            <option value=@cidade.Id>@cidade.Descricao</option>
+                        }
+                    </select>
 
-            <span for="select-status" class="control-label">Status: </span>
-            <select class="form-control ml-2" id="select-status" aria-label="Status" @onchange="((e) => FiltrarAtendimentoPorStatus(e))">
-                <option selected>Todos</option>
-                <option value=@(Convert.ToInt32(StatusProcessoEnum.Apuracao))>Apuração</option>
-                <option value=@(Convert.ToInt32(StatusProcessoEnum.Conferencia))>Conferência</option>
-                <option value=@(Convert.ToInt32(StatusProcessoEnum.Faturamento))>Faturamento</option>
-            </select>
+                    <span for="select-status" class="control-label">Status: </span>
+                    <select class="form-control ml-2" id="select-status" aria-label="Status" @onchange="((e) => FiltrarAtendimentoPorStatus(e))">
+                        <option selected>Todos</option>
+                        <option value=@(Convert.ToInt32(StatusProcessoEnum.Apuracao))>Apuração</option>
+                        <option value=@(Convert.ToInt32(StatusProcessoEnum.Conferencia))>Conferência</option>
+                        <option value=@(Convert.ToInt32(StatusProcessoEnum.Faturamento))>Faturamento</option>
+                    </select>
+                </div>
+            </div>
+            <br />
+
+            <div class="table-responsive">
+                <table class="table caption-top">
+                    <caption>Lista de atendimentos</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Data</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Localização</th>
+                            <th scope="col" colspan="2">Status</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var atendimento in _atendimentosFiltrados)
+                        {
+                            <tr>
+                                <th scope="row">@atendimento.DataHorarioAgendamento.ToString("dd/MM/yyyy")</th>
+                                <td>@atendimento.Associado.Nome</td>
+                                <td>@atendimento.Cidade.Descricao</td>
+                                <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
+                                <td class="d-flex justify-content-end"><button class="btn btn-primary" @onclick="@(() => AbrirModalDetalhes(atendimento))">Visualizar</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <br />
-
-    <div class="table-responsive">
-        <table class="table caption-top">
-            <caption>Lista de atendimentos</caption>
-            <thead>
-                <tr>
-                    <th scope="col">Data</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Localização</th>
-                    <th scope="col" colspan="2">Status</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach (var atendimento in _atendimentosFiltrados)
-                {
-                    <tr>
-                        <th scope="row">@atendimento.DataHorarioAgendamento.ToString("dd/MM/yyyy")</th>
-                        <td>@atendimento.Associado.Nome</td>
-                        <td>@atendimento.Cidade.Descricao</td>
-                        <td class="@ClassPorStatus(atendimento.StatusProcesso.ToString())" colspan="2">@atendimento.StatusProcesso.ToString()</td>
-                        <td class="d-flex justify-content-end"><button class="btn btn-primary" @onclick="@(() => AbrirModalDetalhes(atendimento))">Visualizar</button></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        You are signed out!
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private int _cidadeIdSelecionado = 0;

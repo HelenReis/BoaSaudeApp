@@ -1,9 +1,12 @@
 using Blazored.Modal;
+using BoaSaudeApp.Areas.Identity;
 using BoaSaudeApp.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,10 +49,19 @@ namespace BoaSaudeApp
             services.AddTransient<ICidadeService, CidadeService>();
             services.AddBlazoredModal();
 
+            services.AddScoped<AuthenticationStateProvider, CustomAuthenticatorStateProvider<IdentityUser>>();
+
             services
                 .AddDbContext<DataContext>(
                     options => options.UseMySql(
                             Configuration.GetConnectionString("myConnection")));
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySql(
+                    Configuration.GetConnectionString("myConnectionLogin")));
+
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,17 +83,23 @@ namespace BoaSaudeApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
 
             using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 scope.ServiceProvider.GetService<DataContext>().Database.EnsureDeleted();
                 scope.ServiceProvider.GetService<DataContext>().Database.Migrate();
+
+                scope.ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureDeleted();
+                scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
             }
         }
     }
