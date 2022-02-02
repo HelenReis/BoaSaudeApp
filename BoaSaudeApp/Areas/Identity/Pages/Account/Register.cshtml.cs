@@ -51,14 +51,24 @@ namespace BoaSaudeApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(60, ErrorMessage = "O {0} deve possuir no mínimo {2} caracteres e no máximo {1} caracteres.", MinimumLength = 6)]
+            [Display(Name = "Nome completo")]
+            public string Nome { get; set; }
+
+            [Required]
+            [StringLength(6, ErrorMessage = "O {0} deve possuir {1} caracteres.", MinimumLength = 6)]
+            [Display(Name = "Número CRM")]
+            public string Crm { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "O {0} deve possuir no mínimo {2} e no máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Senha")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar senha")]
+            [Compare("Password", ErrorMessage = "A confirmação não bate com a senha definida.")]
             public string ConfirmPassword { get; set; }
         }
 
