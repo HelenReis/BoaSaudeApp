@@ -104,7 +104,6 @@
 
     private Coordenadas _coordenadas { get; set; }
 
-
     private async Task NovoAtendimento()
     {
         BtnDisabled = true;
@@ -288,6 +287,6 @@
     {
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
-        //_coordenadas = await BuscarCoordenadas();
+        _coordenadas = await BuscarCoordenadas();
     }
 }
