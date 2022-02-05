@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Dominio.UsuarioModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Service.Interface;
 
 namespace BoaSaudeApp.Areas.Identity.Pages.Account
 {
@@ -23,17 +25,19 @@ namespace BoaSaudeApp.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IPrestadorService _prestadorService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IPrestadorService prestadorService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _prestadorService = prestadorService;
         }
 
         [BindProperty]
@@ -100,6 +104,15 @@ namespace BoaSaudeApp.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    var prestador = new Prestador()
+                    {
+                        Nome = Input.Nome,
+                        CRM = Input.Crm,
+                        Email = Input.Email
+                    };
+
+                    await _prestadorService.Adicionar(prestador);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -10,5 +10,7 @@ namespace Repositorio.Interface
     {
         Task<Atendimento> AddAsync(Atendimento obj);
         Task<IEnumerable<Atendimento>> GetAllAsync(params string[] includeProperties);
+        Task<IEnumerable<Atendimento>> BuscarAtendimentosPorPrestador(int id, DateTime dataInicio,
+            DateTime dataFim);
     }
 }

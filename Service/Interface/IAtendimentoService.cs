@@ -10,5 +10,7 @@ namespace Service.Interface
     {
         Task NovoAtendimento(Atendimento atendimento);
         Task<IEnumerable<Atendimento>> ListarAtendimentos();
+        Task<IEnumerable<Atendimento>> ListarAtendimentosPorPrestador(
+            int id, DateTime dataInicio, DateTime dataFim);
     }
 }

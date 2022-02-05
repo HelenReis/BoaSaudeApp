@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ using Repositorio.Implementacao;
 using Repositorio.Interface;
 using Service.Implementacao;
 using Service.Interface;
+using Syncfusion.Blazor;
 
 namespace BoaSaudeApp
 {
@@ -34,6 +36,8 @@ namespace BoaSaudeApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
+
             services.AddSingleton<WeatherForecastService>();
             services.AddTransient<IAssociadoRepositorio, AssociadoRepositorio>();
             services.AddTransient<IConveniadoPrestadorRepositorio, ConveniadoPrestadorRepositorio>();
@@ -42,11 +46,13 @@ namespace BoaSaudeApp
             services.AddTransient<IPlanoRepositorio, PlanoRepositorio>();
             services.AddTransient<IPrestadorRepositorio, PrestadorRepositorio>();
             services.AddTransient<ICidadeRepositorio, CidadeRepositorio>();
+            services.AddTransient<IPrestadorRepositorio, PrestadorRepositorio>();
 
             services.AddTransient<IAssociadoService, AssociadoService>();
             services.AddTransient<IAtendimentoService, AtendimentoService>();
             services.AddTransient<IConveniadoPrestadorService, ConveniadoPrestadorService>();
             services.AddTransient<ICidadeService, CidadeService>();
+            services.AddTransient<IPrestadorService, PrestadorService>();
             services.AddBlazoredModal();
 
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticatorStateProvider<IdentityUser>>();
@@ -77,6 +83,8 @@ namespace BoaSaudeApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UsePathBase(new PathString("/login"));
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

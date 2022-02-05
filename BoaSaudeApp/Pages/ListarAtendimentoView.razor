@@ -1,11 +1,15 @@
-﻿@page "/"
+﻿@page "/atendimentos"
 @inject Service.Interface.IAtendimentoService atendimentoService;
 @inject Service.Interface.ICidadeService cidadeService;
+@inject Service.Interface.IPrestadorService prestadorService;
 @inject IModalService modal;
 @using Dominio.AtendimentoModel;
 @using Dominio.GeotecnologiaModel;
+@using Dominio.UsuarioModel;
 @using Blazored.Modal;
 @using Blazored.Modal.Services
+@using Syncfusion.Blazor.Calendars
+@inject AuthenticationStateProvider authState;
 
 <AuthorizeView>
     <Authorized>
@@ -31,6 +35,17 @@
                         <option value=@(Convert.ToInt32(StatusProcessoEnum.Conferencia))>Conferência</option>
                         <option value=@(Convert.ToInt32(StatusProcessoEnum.Faturamento))>Faturamento</option>
                     </select>
+                </div>
+                <div class="form-inline mt-2">
+                    <span for="data-inicio" class="control-label">Data início: </span>
+                    <div id="data-inicio" class="mr-2 ml-2">
+                        <SfDatePicker ValueChanged="@(async() => await AtualizarAtendimentos())" TValue="DateTime?" Max='@MaxDate' Value='@DataInicio'></SfDatePicker>
+                    </div>
+
+                    <span for="data-fim" class="control-label">Data fim: </span>
+                    <div id="data-fim" class="ml-2">
+                        <SfDatePicker TValue="DateTime?" Max='@MaxDate' Value='@DataFim'></SfDatePicker>
+                    </div>
                 </div>
             </div>
             <br />
@@ -65,17 +80,29 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        Você saiu da aplicação!
+        <LoginRedirect />
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
     private int _cidadeIdSelecionado = 0;
     private StatusProcessoEnum? _statusSelecionado = null;
+    private Prestador _usuarioLogado;
 
     private IEnumerable<Atendimento> _atendimentos = new List<Atendimento>();
     private IEnumerable<Atendimento> _atendimentosFiltrados = new List<Atendimento>();
     private IEnumerable<Cidade> _cidades = new List<Cidade>();
+
+    public DateTime MaxDate { get; set; } = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+    public DateTime? DataInicio { get; set; } = new DateTime(
+        DateTime.Now.Year,
+        DateTime.Now.Month,
+        DateTime.Now.Day);
+    public DateTime? DataFim { get; set; } = new DateTime(
+        DateTime.Now.Year,
+        DateTime.Now.Month,
+        DateTime.Now.Day);
+
 
     private string ClassPorStatus(string status)
     {
@@ -152,10 +179,26 @@
         modal.Show<DetalheAtendimentoView>("Dados atendimento", parametros);
     }
 
+    private async Task AtualizarAtendimentos()
+    {
+        _atendimentos = await atendimentoService.ListarAtendimentosPorPrestador(
+            _usuarioLogado.Id,
+            DataInicio.Value,
+            DataFim.Value);
+
+        _atendimentosFiltrados = _atendimentos;
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        _atendimentos = await atendimentoService.ListarAtendimentos();
-        _cidades = await cidadeService.ListarCidades();
+        var auth = await authState.GetAuthenticationStateAsync();
+        _usuarioLogado = await prestadorService.BuscarPrestador(auth.User.Identity.Name);
+        _atendimentos = await atendimentoService.ListarAtendimentosPorPrestador(
+            _usuarioLogado.Id,
+            DataInicio.Value,
+            DataFim.Value);
         _atendimentosFiltrados = _atendimentos;
+        _cidades = await cidadeService.ListarCidades();
+
     }
 }

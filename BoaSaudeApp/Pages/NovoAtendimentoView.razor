@@ -15,10 +15,11 @@
 @inject Service.Interface.IConveniadoPrestadorService conveniadoPrestadorService;
 @inject Service.Interface.IAtendimentoService atendimentoService;
 @inject Service.Interface.ICidadeService cidadeService;
+@inject Service.Interface.IPrestadorService prestadorService;
 @inject IModalService modal;
 @inject IJSRuntime JSRuntime;
 @inject IConfiguration configuration;
-
+@inject AuthenticationStateProvider authState;
 
 
 <EditForm Model="@atendimentoNovo" OnValidSubmit="@(async e => await NovoAtendimento())">
@@ -101,6 +102,7 @@
 
     private IEnumerable<Associado> _associados = new List<Associado>();
     private IEnumerable<ConveniadoPrestador> _conveniados = new List<ConveniadoPrestador>();
+    private Prestador _usuarioLogado;
 
     private Coordenadas _coordenadas { get; set; }
 
@@ -112,14 +114,14 @@
         .AddHours(atendimentoNovo.Horario.Hour)
         .AddMinutes(atendimentoNovo.Horario.Minute);
 
-        var endereco = await BuscarEnderecoPorCoordenadas();
-        var cidadeId = await BuscarCidadeId(endereco);
+        //var endereco = await BuscarEnderecoPorCoordenadas();
+        //var cidadeId = await BuscarCidadeId(endereco);
 
         var atendimento = new Atendimento(
         atendimentoNovo.Valor,
         StatusProcessoEnum.Apuracao,
         dataHorarioAgendamento,
-        1,
+        _usuarioLogado.Id,
         ConveniadoIdSelecionado,
         AssociadoIdSelecionado,
         1);
@@ -285,6 +287,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var auth = await authState.GetAuthenticationStateAsync();
+        _usuarioLogado = await prestadorService.BuscarPrestador(auth.User.Identity.Name);
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
         _coordenadas = await BuscarCoordenadas();

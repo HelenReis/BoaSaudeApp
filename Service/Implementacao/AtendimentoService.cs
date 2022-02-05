@@ -27,6 +27,13 @@ namespace Service.Implementacao
                 "Cidade");
         }
 
+        public async Task<IEnumerable<Atendimento>> ListarAtendimentosPorPrestador(
+            int id, DateTime dataInicio, DateTime dataFim)
+        {
+            return await _repositorio.BuscarAtendimentosPorPrestador(
+                id, dataInicio, dataFim);
+        }
+
         public async Task NovoAtendimento(Atendimento atendimento)
         {
             await _repositorio.AddAsync(atendimento);
