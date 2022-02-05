@@ -1,4 +1,5 @@
-﻿<AuthorizeView>
+﻿@using BoaSaudeApp.Pages;
+<AuthorizeView>
     <Authorized>
         <div class="top-row pl-4 navbar navbar-dark">
             <a class="navbar-brand" href="">Boa Saúde</a>
@@ -22,6 +23,9 @@
             </ul>
         </div>
     </Authorized>
+    <NotAuthorized>
+        <LoginRedirect />
+    </NotAuthorized>
 </AuthorizeView>
 
 

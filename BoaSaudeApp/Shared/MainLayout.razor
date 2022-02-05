@@ -1,19 +1,25 @@
 ﻿@inherits LayoutComponentBase
+@using BoaSaudeApp.Pages;
 
-    <AuthorizeView>
-        <Authorized>
-            <div class="sidebar">
-                <NavMenu />
+<AuthorizeView>
+    <Authorized>
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+
+        <div class="main">
+            <div class="top-row px-4 auth">
+                <LoginDisplay />
             </div>
-        </Authorized>
-    </AuthorizeView>
 
-    <div class="main">
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
+            <div class="content px-4">
+                @Body
+            </div>
         </div>
+    </Authorized>
+    <NotAuthorized>
+        <LoginRedirect />
+    </NotAuthorized>
+</AuthorizeView>
 
-        <div class="content px-4">
-            @Body
-        </div>
-    </div>
+

@@ -291,6 +291,6 @@
         _usuarioLogado = await prestadorService.BuscarPrestador(auth.User.Identity.Name);
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
-        _coordenadas = await BuscarCoordenadas();
+        //_coordenadas = await BuscarCoordenadas();
     }
 }
