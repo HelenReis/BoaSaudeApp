@@ -39,12 +39,12 @@
                 <div class="form-inline mt-2">
                     <span for="data-inicio" class="control-label">Data início: </span>
                     <div id="data-inicio" class="mr-2 ml-2">
-                        <SfDatePicker ValueChanged="@(async() => await AtualizarAtendimentos())" TValue="DateTime?" Max='@MaxDate' Value='@DataInicio'></SfDatePicker>
+                        <SfDatePicker ValueChanged="@(async(data) => await AtualizarAtendimentosDataInicio(data))" TValue="DateTime?" Max='@MaxDate' Value='@DataInicio'></SfDatePicker>
                     </div>
 
                     <span for="data-fim" class="control-label">Data fim: </span>
                     <div id="data-fim" class="ml-2">
-                        <SfDatePicker TValue="DateTime?" Max='@MaxDate' Value='@DataFim'></SfDatePicker>
+                        <SfDatePicker ValueChanged="@(async(data) => await AtualizarAtendimentosDataFim(data))" TValue="DateTime?" Max='@MaxDate' Value='@DataFim'></SfDatePicker>
                     </div>
                 </div>
             </div>
@@ -79,9 +79,6 @@
             </div>
         </div>
     </Authorized>
-    <NotAuthorized>
-        <LoginRedirect />
-    </NotAuthorized>
 </AuthorizeView>
 
 @code {
@@ -177,6 +174,24 @@
         parametros.Add("Atendimento", atendimento);
 
         modal.Show<DetalheAtendimentoView>("Dados atendimento", parametros);
+    }
+
+    private async Task AtualizarAtendimentosDataInicio(DateTime? novaData)
+    {
+        if (novaData != null)
+        {
+            DataInicio = novaData;
+            await AtualizarAtendimentos();
+        }
+    }
+
+    private async Task AtualizarAtendimentosDataFim(DateTime? novaData)
+    {
+        if (novaData != null)
+        {
+            DataFim = novaData;
+            await AtualizarAtendimentos();
+        }
     }
 
     private async Task AtualizarAtendimentos()

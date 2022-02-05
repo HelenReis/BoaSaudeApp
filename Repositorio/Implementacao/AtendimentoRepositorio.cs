@@ -25,7 +25,8 @@ namespace Repositorio.Implementacao
                 .Where(a =>
                     a.DataHorarioAgendamento.Date >= dataInicio.Date &&
                     a.DataHorarioAgendamento.Date <= dataFim.Date)
-                .Include("Associado");
+                .Include("Associado")
+                .Include("Associado.Plano");
 
             return await query.ToListAsync();
         }
