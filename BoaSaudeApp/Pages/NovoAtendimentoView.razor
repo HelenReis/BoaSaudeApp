@@ -104,8 +104,6 @@
     private IEnumerable<ConveniadoPrestador> _conveniados = new List<ConveniadoPrestador>();
     private Prestador _usuarioLogado;
 
-    private Coordenadas _coordenadas { get; set; }
-
     private async Task NovoAtendimento()
     {
         BtnDisabled = true;
@@ -138,26 +136,13 @@
     {
         try
         {
-            var coordenadas = _coordenadas.ParaString();
-
-            var url = configuration.GetConnectionString("PositionStackUrl");
-            var accessKey = configuration.GetConnectionString("PositionStackAccessKey");
+            var url = configuration.GetConnectionString("GeolocalizacaoUrl");
 
             var endereco = await url
-                .AppendPathSegment("reverse")
-                .SetQueryParams(
-                    new
-                    {
-                        key = accessKey,
-                        lat = _coordenadas.Latitude,
-                        lon = _coordenadas.Longitude,
-                        format = "json"
-                    })
                 .GetAsync()
-                .ReceiveJson<Endereco>();
+                .ReceiveJson<EnderecoDetalhes>();
 
-
-            return endereco.Localizacao;
+            return endereco;
         }
         catch (Exception ex)
         {
@@ -282,18 +267,11 @@
         }
     }
 
-    private async Task<Coordenadas> BuscarCoordenadas()
-    {
-        var coordenadas = await JSRuntime.InvokeAsync<string>("getCoordenadas");
-        return JsonConvert.DeserializeObject<Coordenadas>(coordenadas);
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var auth = await authState.GetAuthenticationStateAsync();
         _usuarioLogado = await prestadorService.BuscarPrestador(auth.User.Identity.Name);
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
-        _coordenadas = await BuscarCoordenadas();
     }
 }
