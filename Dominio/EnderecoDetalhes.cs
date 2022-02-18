@@ -1,22 +1,19 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Dominio
 {
     public class Endereco
     {
-        [JsonProperty("data")]
-        public IEnumerable<EnderecoDetalhes> Data { get; set; }
+        [JsonProperty("address")]
+        public EnderecoDetalhes Localizacao { get; set; }
     }
 
     public class EnderecoDetalhes
     {
-        [JsonProperty("region_code")]
-        public string CodigoEstado { get; set; }
+        [JsonProperty("state")]
+        public string Estado { get; set; }
 
-        [JsonProperty("administrative_area")]
+        [JsonProperty("city")]
         public string Cidade { get; set; }
     }
 }

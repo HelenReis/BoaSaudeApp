@@ -1,6 +1,10 @@
 ﻿@using Dominio.AtendimentoModel;
 
-Horário atendimento: @atendimento.DataHorarioAgendamento.ToString("HH:mm")
+<address>
+    <strong>Dados atendimento</strong><br>
+    Horário: @atendimento.DataHorarioAgendamento.ToString("HH:mm")<br>
+    Data: @atendimento.DataHorarioAgendamento.ToString("dd/MM/yyyy")<br>
+</address>
 
 <address>
     <strong>Dados cliente</strong><br>

@@ -114,8 +114,8 @@
         .AddHours(atendimentoNovo.Horario.Hour)
         .AddMinutes(atendimentoNovo.Horario.Minute);
 
-        //var endereco = await BuscarEnderecoPorCoordenadas();
-        //var cidadeId = await BuscarCidadeId(endereco);
+        var endereco = await BuscarEnderecoPorCoordenadas();
+        var cidadeId = await BuscarCidadeId(endereco);
 
         var atendimento = new Atendimento(
         atendimentoNovo.Valor,
@@ -124,7 +124,7 @@
         _usuarioLogado.Id,
         ConveniadoIdSelecionado,
         AssociadoIdSelecionado,
-        1);
+        cidadeId);
 
         await atendimentoService.NovoAtendimento(atendimento);
 
@@ -148,13 +148,16 @@
                 .SetQueryParams(
                     new
                     {
-                        access_key = accessKey,
-                        query = coordenadas
+                        key = accessKey,
+                        lat = _coordenadas.Latitude,
+                        lon = _coordenadas.Longitude,
+                        format = "json"
                     })
                 .GetAsync()
                 .ReceiveJson<Endereco>();
 
-            return endereco.Data.FirstOrDefault();
+
+            return endereco.Localizacao;
         }
         catch (Exception ex)
         {
@@ -169,7 +172,7 @@
 
         if (cidade == null)
             cidade = await CadastrarCidade(
-                new Cidade(endereco.Cidade, endereco.CodigoEstado));
+                new Cidade(endereco.Cidade, endereco.Estado));
 
         return cidade.Id;
     }
@@ -291,6 +294,6 @@
         _usuarioLogado = await prestadorService.BuscarPrestador(auth.User.Identity.Name);
         _associados = await associadoService.BuscarAssociadosAtivos();
         _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
-        //_coordenadas = await BuscarCoordenadas();
+        _coordenadas = await BuscarCoordenadas();
     }
 }
