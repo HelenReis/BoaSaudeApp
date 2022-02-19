@@ -10,7 +10,7 @@ namespace Dominio
 
     public class EnderecoDetalhes
     {
-        [JsonProperty("region")]
+        [JsonProperty("state")]
         public string Estado { get; set; }
 
         [JsonProperty("city")]

@@ -53,6 +53,7 @@ namespace BoaSaudeApp
             services.AddTransient<IConveniadoPrestadorService, ConveniadoPrestadorService>();
             services.AddTransient<ICidadeService, CidadeService>();
             services.AddTransient<IPrestadorService, PrestadorService>();
+            services.AddTransient<IConveniadoService, ConveniadoService>();
             services.AddBlazoredModal();
 
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticatorStateProvider<IdentityUser>>();

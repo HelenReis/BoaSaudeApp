@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Repositorio.Interface
 {
-    public interface IConveniadoRepositorio
+    public interface IPlanoRepositorio
     {
     }
 }

@@ -16,6 +16,7 @@
 @inject Service.Interface.IAtendimentoService atendimentoService;
 @inject Service.Interface.ICidadeService cidadeService;
 @inject Service.Interface.IPrestadorService prestadorService;
+@inject Service.Interface.IConveniadoService conveniadoService;
 @inject IModalService modal;
 @inject IJSRuntime JSRuntime;
 @inject IConfiguration configuration;
@@ -59,7 +60,7 @@
                 <datalist id="datalistOptions2">
                     @foreach (var conveniado in _conveniados)
                     {
-                        <option value="@conveniado.Conveniado.NomeFantasia">@conveniado.Conveniado.NomeFantasia</option>
+                        <option value="@conveniado.NomeFantasia">@conveniado.NomeFantasia</option>
                     }
                 </datalist>
             </div>
@@ -99,9 +100,10 @@
             {
                 ProcedimentoEnum.Retorno, 100
             }};
+    private Coordenadas _coordenadas { get; set; }
 
     private IEnumerable<Associado> _associados = new List<Associado>();
-    private IEnumerable<ConveniadoPrestador> _conveniados = new List<ConveniadoPrestador>();
+    private IEnumerable<Conveniado> _conveniados = new List<Conveniado>();
     private Prestador _usuarioLogado;
 
     private async Task NovoAtendimento()
@@ -136,13 +138,26 @@
     {
         try
         {
+            var coordenadas = _coordenadas.ParaString();
+
             var url = configuration.GetConnectionString("GeolocalizacaoUrl");
+            var accessKey = configuration.GetConnectionString("GeolocalizacaoKey");
 
             var endereco = await url
+                .AppendPathSegment("reverse")
+                .SetQueryParams(
+                    new
+                    {
+                        key = accessKey,
+                        lat = _coordenadas.Latitude,
+                        lon = _coordenadas.Longitude,
+                        format = "json"
+                    })
                 .GetAsync()
-                .ReceiveJson<EnderecoDetalhes>();
+                .ReceiveJson<Endereco>();
 
-            return endereco;
+
+            return endereco.Localizacao;
         }
         catch (Exception ex)
         {
@@ -201,8 +216,8 @@
         get
         {
             return _conveniados.FirstOrDefault(c =>
-              c.Conveniado.NomeFantasia.Equals(atendimentoNovo.ConveniadoIdSelecionado))
-              .ConveniadoId; ;
+              c.NomeFantasia.Equals(atendimentoNovo.ConveniadoIdSelecionado))
+              .Id;
         }
     }
 
@@ -267,11 +282,18 @@
         }
     }
 
+    private async Task<Coordenadas> BuscarCoordenadas()
+    {
+        var coordenadas = await JSRuntime.InvokeAsync<string>("getCoordenadas");
+        return JsonConvert.DeserializeObject<Coordenadas>(coordenadas);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var auth = await authState.GetAuthenticationStateAsync();
         _usuarioLogado = await prestadorService.BuscarPrestador(auth.User.Identity.Name);
         _associados = await associadoService.BuscarAssociadosAtivos();
-        _conveniados = await conveniadoPrestadorService.BuscarConveniadosPorPrestador(1);
+        _conveniados = await conveniadoService.ListarConveniados();
+        _coordenadas = await BuscarCoordenadas();
     }
 }
