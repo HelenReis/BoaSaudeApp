@@ -109,13 +109,25 @@
     private async Task NovoAtendimento()
     {
         BtnDisabled = true;
+        int cidadeId;
 
         var dataHorarioAgendamento = atendimentoNovo.Data
-        .AddHours(atendimentoNovo.Horario.Hour)
-        .AddMinutes(atendimentoNovo.Horario.Minute);
+            .AddHours(atendimentoNovo.Horario.Hour)
+            .AddMinutes(atendimentoNovo.Horario.Minute);
 
-        var endereco = await BuscarEnderecoPorCoordenadas();
-        var cidadeId = await BuscarCidadeId(endereco);
+        if (_coordenadas != null)
+        {
+            var endereco = await BuscarEnderecoPorCoordenadas();
+            cidadeId = await BuscarCidadeId(endereco);
+        } else
+        {
+            var endereco = new EnderecoDetalhes
+            {
+                Cidade = "Não localizado"
+            };
+
+            cidadeId = await BuscarCidadeId(endereco); ;
+        }
 
         var atendimento = new Atendimento(
         atendimentoNovo.Valor,
@@ -284,8 +296,15 @@
 
     private async Task<Coordenadas> BuscarCoordenadas()
     {
-        var coordenadas = await JSRuntime.InvokeAsync<string>("getCoordenadas");
-        return JsonConvert.DeserializeObject<Coordenadas>(coordenadas);
+        try
+        {
+            var coordenadas = await JSRuntime.InvokeAsync<string>("getCoordenadas");
+            return JsonConvert.DeserializeObject<Coordenadas>(coordenadas);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     protected override async Task OnInitializedAsync()
